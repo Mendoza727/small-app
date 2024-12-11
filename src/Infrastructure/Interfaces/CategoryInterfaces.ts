@@ -1,9 +1,9 @@
 export interface CategoryResponse {
     message: string;
-    data:    Datum[];
+    data:    Category[];
 }
 
-export interface Datum {
+export interface Category {
     id:          number;
     name:        string;
     description: string;

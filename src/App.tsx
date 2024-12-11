@@ -12,6 +12,7 @@ import { useUserStore } from "./store/user.store";
 import { useEffect } from "react";
 import { CreateVideoScreen } from "./screen/Videos/CreateVIdeo/CreateVideoScreen";
 import { ViewVideoScreen } from "./screen/Videos/ViewVideo/ViewVideoScreen";
+import EditVideoScreen from "./screen/Videos/EditVideo/EditVideoScreen";
 
 export const URL_MEDIA = "http://www.localhost:8000/";
 
@@ -24,7 +25,7 @@ function App() {
     if (decryptData) {
       changeUser(
         decryptData["id"],
-        decryptData["name"], 
+        decryptData["name"],
         decryptData["last_name"],
         decryptData["email"],
         decryptData["avatar"],
@@ -44,9 +45,10 @@ function App() {
               <HomeScreen />
             }
           />
-          <Route path="create-video"  element={<RequireAuth><CreateVideoScreen /></RequireAuth>} />
-          <Route path="video/:id"  element={<RequireAuth><ViewVideoScreen /></RequireAuth>} />
-          <Route path="videos"  element={<RequireAuth><CreateVideoScreen /></RequireAuth>} />
+          <Route path="create-video" element={<RequireAuth><CreateVideoScreen /></RequireAuth>} />
+          <Route path="video/:id" element={<RequireAuth><ViewVideoScreen /></RequireAuth>} />
+          <Route path="edit-video/:id" element={<RequireAuth><EditVideoScreen /></RequireAuth>} />
+          <Route path="videos" element={<RequireAuth><CreateVideoScreen /></RequireAuth>} />
           <Route path="auth" element={<AuthScreen />} />
           <Route path="*" element={<Navigate to="home" />} />
         </Routes>

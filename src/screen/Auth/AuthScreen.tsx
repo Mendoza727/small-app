@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button, Label, TextInput, Checkbox, Avatar } from "flowbite-react";
 import { Mail, User } from "lucide-react";
-import imageLogin from "@/assets/authImage.webp";
+import imageLogin from "../../assets/authImage.webp";
 import { Register } from "@/Infrastructure/Interfaces/AuthInterfaces";
 import { LoadingComponent } from "@/components/Loading/LoadingComponent";
 import animationLogin from "@/lotties/lottie-loading.json";
 import { useLogin } from "@/hooks/AuthHooks/useAuth";
 import Swal from "sweetalert2";
-import { avatarGenerator } from "@/config/helpers/AvatarGenerator.utils";
+import { avatarGenerator, fileUrlToFile } from "@/config/helpers/AvatarGenerator.utils";
 
 export const AuthScreen = () => {
   const { isLoading, login, RegisterUser } = useLogin();
@@ -16,7 +16,7 @@ export const AuthScreen = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
-  const [avatarFile, setAvatarFile] = useState<File>();
+  const [avatarFile, setAvatarFile] = useState<any>();
   const [userForm, setUserForm] = useState<Register>({
     name: "",
     last_name: "",
@@ -25,28 +25,31 @@ export const AuthScreen = () => {
   });
 
   const toggleForm = () => setIsLogin(!isLogin);
-  
+
   useEffect(() => {
     if (userForm?.name !== "" && userForm?.last_name !== "") {
-      
+
       avatarGenerator({
         name: userForm.name,
         lastName: userForm.last_name
       }).then((results) => {
         setAvatarUrl(results.fileUrl);
-        setAvatarFile(results.file);
+
+        fileUrlToFile(results.fileUrl).then((results) => {
+          setAvatarFile(results);
+        });
       });
-      
+
     }
   }, [userForm?.name, userForm?.last_name]);
 
-  const handleFormSubmit = async() => {
+  const handleFormSubmit = async () => {
     if (isLogin) {
       const authLogin = login(email);
 
       authLogin
         .then((response) => {
-          if (response.access !== "") {
+          if (response) {
             Swal.fire({
               icon: 'success',
               title: '¡Éxito!',
@@ -72,7 +75,7 @@ export const AuthScreen = () => {
           Swal.fire({
             icon: 'error',
             title: '¡Algo salió mal!',
-            text: "Hubo un problema al procesar tu solicitud. Por favor, inténtalo de nuevo."+error,
+            text: "Hubo un problema al procesar tu solicitud. Por favor, inténtalo de nuevo." + error,
             confirmButtonColor: '#D32F2F',
             confirmButtonText: 'Cerrar',
             customClass: {
@@ -82,9 +85,18 @@ export const AuthScreen = () => {
           });
         });
     } else {
-      const { name, last_name, email, avatars } = userForm;
+      const { name, last_name } = userForm;
 
-      if (!name || !last_name || !email || !avatars ) {
+      const formData = new FormData();
+
+      formData.append('name', name);
+      formData.append('last_name', last_name);
+      formData.append('email', email);
+      formData.append('avatar', avatarFile)
+
+      console.log(name, last_name, email);
+
+      if (!name || !last_name || !email) {
         Swal.fire({
           icon: 'error',
           title: '¡Campos incompletos!',
@@ -97,15 +109,9 @@ export const AuthScreen = () => {
           },
         });
         return;
-      } 
-      
-      await RegisterUser({
-        name,
-        last_name,
-        email,
-        avatars: avatarFile
-      })
-      .then(() => {
+      }
+
+      await RegisterUser(formData).then(() => {
           Swal.fire({
             icon: 'success',
             title: '¡Registro Exitoso!',
@@ -117,23 +123,23 @@ export const AuthScreen = () => {
               title: 'text-xl font-bold',
             },
             didClose: () => {
-              window.location.href = '/Verify';
+              window.location.reload()
             },
           });
       })
-      .catch((error) => {
-        Swal.fire({
-          icon: 'error',
-          title: '¡Error en el registro!',
-          text: 'Hubo un problema al registrar tu cuenta. ' + error,
-          confirmButtonColor: '#D32F2F',
-          confirmButtonText: 'Cerrar',
-          customClass: {
-            popup: 'rounded-lg shadow-lg',
-            title: 'text-xl font-bold text-red-700',
-          },
+        .catch((error) => {
+          Swal.fire({
+            icon: 'error',
+            title: '¡Error en el registro!',
+            text: 'Hubo un problema al registrar tu cuenta. ' + error,
+            confirmButtonColor: '#D32F2F',
+            confirmButtonText: 'Cerrar',
+            customClass: {
+              popup: 'rounded-lg shadow-lg',
+              title: 'text-xl font-bold text-red-700',
+            },
+          });
         });
-      });
     }
   };
 

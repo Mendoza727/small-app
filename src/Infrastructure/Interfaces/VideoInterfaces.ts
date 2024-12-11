@@ -17,24 +17,51 @@ export interface Video {
 
 export interface VideoResponse {
   message: string;
-  data: Videos[];
+  data:    Data;
 }
-export interface Videos {
-  id: number;
-  category: number[];
-  title: string;
-  description: string;
-  video: null | string;
-  banner: string;
+
+export interface Data {
+  video:       Video;
+  author:      Author;
+  comments:    Comment[];
+  likes_count: number;
+  views_count: number;
+}
+
+export interface Author {
+  name:      string;
+  last_name: string;
+  email:     string;
+  avatars:   null;
+  role:      string;
+}
+
+export interface Comments {
+  id:          number;
   is_approved: boolean;
-  moderation_notes: null;
-  type_video: string;
-  is_active: boolean;
-  is_deleted: boolean;
-  created_at: Date;
+  comment:     string;
+  created_at:  Date;
   modified_at: Date;
-  date_show: Date;
-  id_autor: number;
+  id_user:     number;
+  id_video:    number;
+}
+
+export interface Videos {
+  id:               number;
+  title:            string;
+  description:      string;
+  video:            string;
+  is_approved:      boolean;
+  banner:           string;
+  moderation_notes: null;
+  category:         any[];
+  type_video:       string;
+  is_active:        boolean;
+  is_deleted:       boolean;
+  created_at:       Date;
+  modified_at:      Date;
+  date_show:        Date;
+  id_autor:         number;
 }
 export interface VideoStastisticsResponse {
   message: string;

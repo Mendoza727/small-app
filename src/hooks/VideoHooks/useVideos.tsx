@@ -87,11 +87,31 @@ export const useVideos = () => {
         }
     }
 
+    const DeleteVideo = async (idVideo: number): Promise<any> => {
+        setIsLoading(true);
+
+        try {
+            const deleteVide = await UseCase.DeleteVideo(
+                SmallTubeFetcher,
+                idVideo,
+                access
+            )
+
+            return deleteVide;
+        } catch (err) {
+            console.log("ERR: delete videos", err);
+            throw err;
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     return {
         GetAllVideos,
         isLoading,
         CreateVideo,
         getVideoByAutor,
-        GetVideoById
+        GetVideoById,
+        DeleteVideo
     };
 };

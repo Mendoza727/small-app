@@ -1,16 +1,18 @@
 import { HeaderComponent } from '@/components/Header/HeaderComponent'
 import { useCategory } from '@/hooks/CategoryHooks/useCategory'
 import { useVideos } from '@/hooks/VideoHooks/useVideos'
-import { Datum } from '@/Infrastructure/Interfaces/CategoryInterfaces'
+import { Category } from '@/Infrastructure/Interfaces/CategoryInterfaces'
 import { typeVideo, Video } from '@/Infrastructure/Interfaces/VideoInterfaces'
 import { useUserStore } from '@/store/user.store'
 import { Button, Label, Textarea, TextInput } from 'flowbite-react'
 import { Upload, X } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
+import { useNavigate } from 'react-router-dom'
 import Swal from "sweetalert2";
 
 export const CreateVideoScreen = () => {
+  const navigate = useNavigate();
   const { isLoading, getAllCategoryDetail } = useCategory();
   const { CreateVideo } = useVideos();
 
@@ -155,8 +157,10 @@ export const CreateVideoScreen = () => {
           Swal.fire({
             icon: "success",
             title: "Formulario enviado",
-            text: "El formulario se ha enviado con éxito.",
+            text: "El video se ha creado con éxito.",
           });
+
+          navigate('/home');
         } else {
           Swal.fire({
             icon: "error",
@@ -251,7 +255,7 @@ export const CreateVideoScreen = () => {
                   <option value="" disabled>
                     Seleccione
                   </option>
-                  {getAllCategoryDetail?.data.map((value: Datum) => (
+                  {getAllCategoryDetail?.data.map((value: Category) => (
                     <option key={value.id} value={value.id}>
                       {value.name}
                     </option>

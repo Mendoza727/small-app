@@ -14,12 +14,15 @@
     "sourceMap": true,
     "strict": true,
     "jsx": "react-jsx",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "resolveJsonModule": true
   },
   "include": ["src/**/*"],
   "exclude": ["dist", "node_modules", "**/*.d.ts"]

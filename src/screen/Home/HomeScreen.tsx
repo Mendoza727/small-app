@@ -7,12 +7,13 @@ import { useEffect, useState } from "react";
 import { LoadingComplete, } from "@/components/Loading/LoadingComponent";
 import { URL_MEDIA } from "@/App";
 import { Videos } from "@/Infrastructure/Interfaces/VideoInterfaces";
+import { useNavigate } from "react-router-dom";
 
 export const HomeScreen = () => {
   const { isLoading, GetAllVideos, } = useVideos();
   const [videoDetails, setVideoDetails] = useState<Videos[]>([]);
 
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     getData();
@@ -21,8 +22,6 @@ export const HomeScreen = () => {
   const getData = async () => {
     try {
       const response: any = await GetAllVideos();
-
-      // Verifica si 'data' existe y es un arreglo
       const videos = Array.isArray(response.data) ? response.data : [];
 
       if (Array.isArray(videos)) {
@@ -30,9 +29,7 @@ export const HomeScreen = () => {
       } else {
         console.log('No hay videos disponibles o no es un arreglo.');
       }
-
       console.log(videoDetails);
-
     } catch (error) {
       console.error("Error fetching videos:", error);
     }
@@ -47,6 +44,10 @@ export const HomeScreen = () => {
   }
 
   const random = getRandomVideo();
+
+  const viewVideo = async (idVideo: number) => {
+    navigate(`/video/${idVideo}`);
+  }
 
   if (isLoading) {
     return <LoadingComplete />
@@ -68,8 +69,8 @@ export const HomeScreen = () => {
                 <div className="relative aspect-video rounded-xl overflow-hidden group">
                   <video
                     src={`${URL_MEDIA}${random.video}`}
-                    width={920}
-                    height={600}
+                    width={400}
+                    height={500}
                     className="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-happyblue-950 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -80,7 +81,7 @@ export const HomeScreen = () => {
                       <p className="text-xl text-happyblue-200 mb-4">
                         {random.description}
                       </p>
-                      <Button className="bg-happyblue-500 hover:bg-happyblue-600 text-happyblue-50">
+                      <Button className="bg-happyblue-500 hover:bg-happyblue-600 text-happyblue-50" onClick={() => viewVideo(random.id)}>
                         <Play className="mr-2 h-4 w-4" /> Watch Now
                       </Button>
                     </div>
@@ -97,11 +98,9 @@ export const HomeScreen = () => {
               className="mb-8"
             >
               <Tabs.Item active={true} title="Trending">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 grid-flow-row-dense">
                   {videoDetails.map((video) => (
-                    <div key={video.id} className="flex flex-col break-inside-avoid">
-                      <VideoThumbnailComponent video={video} />
-                    </div>
+                    <VideoThumbnailComponent video={video} />
                   ))}
                 </div>
               </Tabs.Item>

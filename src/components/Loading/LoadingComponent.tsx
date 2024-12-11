@@ -1,6 +1,6 @@
 import Lottie from "react-lottie";
 import { BarLoader } from 'react-spinners'
-import logoApp from '@/assets/android-chrome-192x192.png';
+import logoApp from '../../assets/android-chrome-192x192.png';
 interface Props {
   lottie: any;
   height?: number;
