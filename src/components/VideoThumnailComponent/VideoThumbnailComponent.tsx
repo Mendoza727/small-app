@@ -1,19 +1,14 @@
+import { URL_MEDIA } from '@/App';
+import { Videos } from '@/Infrastructure/Interfaces/VideoInterfaces';
 import { Button } from 'flowbite-react';
-import { motion, AnimatePresence } from 'framer-motion'
-import {Play, Volume2 } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion';
+import { Play, Volume2 } from 'lucide-react';
 
 interface Props {
-  video: Video;
+  video: Videos;
   isHovered?: boolean;
   onHover?: () => void;
   onLeave?: () => void;
-}
-
-interface Video {
-  title: string;
-  views: string;
-  duration: string;
-  thumbnail: string;
 }
 
 export const VideoThumbnailComponent = ({
@@ -34,12 +29,11 @@ export const VideoThumbnailComponent = ({
       transition={{ duration: 0.3 }}
     >
       <div className="relative rounded-lg overflow-hidden">
-        <img
-          src={video.thumbnail}
-          alt={video.title}
+        <video
+          src={`${URL_MEDIA}${video.video}`}
           width={640}
           height={360}
-          className="h-auto max-w-full rounded-lg object-cover transform group-hover:scale-105 transition-transform duration-300"
+          className="h-auto max-w-full rounded-lg object-cover group-hover:scale-105 transition-transform duration-300"
         />
         <div className="absolute inset-0 bg-happyblue-950 bg-opacity-0 group-hover:bg-opacity-70 transition-opacity duration-300 flex items-center justify-center">
           <AnimatePresence>
@@ -79,10 +73,7 @@ export const VideoThumbnailComponent = ({
           </AnimatePresence>
         </div>
         <div className="absolute bottom-2 left-2 bg-happyblue-900 bg-opacity-75 px-2 py-1 rounded text-xs text-happyblue-100">
-          {video.views}
-        </div>
-        <div className="absolute top-2 right-2 bg-happyblue-900 bg-opacity-75 px-2 py-1 rounded text-xs text-happyblue-100">
-          {video.duration}
+          {video.title}
         </div>
       </div>
     </motion.div>

@@ -2,6 +2,8 @@ import { createContext, PropsWithChildren, useContext, useEffect, useState } fro
 import { useUserStore } from "@/store/user.store";
 import { useNavigate } from "react-router-dom";
 import { getEncryptedLocalStorage } from "@/storage/StorageServices";
+import { LoadingComponent } from "@/components/Loading/LoadingComponent";
+import LoadingAnimation from '@/lotties/lottie-loading.json'
 
 const AuthContext = createContext<{
   isToken: boolean | null;
@@ -43,19 +45,18 @@ interface Props {
 }
 
 export const RequireAuth = ({ children }: Props) => {
-  const storedToken = getEncryptedLocalStorage("data"); // Recupera los datos cifrados desde localStorage
+  const storedToken = getEncryptedLocalStorage("data"); 
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Verifica si los datos recuperados contienen la clave de acceso
     if (!storedToken || !storedToken["access"]) {
-      navigate("/auth"); // Si no hay acceso, redirige a la página de autenticación
+      navigate("/home"); 
     }
   }, [storedToken, navigate]);
 
   if (!storedToken || !storedToken["access"]) {
-    return <div>Cargando...</div>; // Muestra "Cargando..." mientras se verifica el acceso
+    return <LoadingComponent lottie={LoadingAnimation} />
   }
 
-  return <>{children}</>; // Muestra los hijos si el acceso está presente
+  return <>{children}</>; 
 };

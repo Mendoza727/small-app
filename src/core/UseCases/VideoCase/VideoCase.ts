@@ -22,6 +22,27 @@ export const GetAllVideos = async (
   }
 };
 
+export const GetVideoById = async (
+  fetcher: HttpAdpater,
+  idVideo: number,
+  token: string
+): Promise<any> => {
+  try {
+    const getVideoId = await fetcher.get<any>(
+      `getVideo/${idVideo}/`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return getVideoId["data"];
+  } catch (error) {
+    throw new Error("Error trying to get videos: " + error);
+  }
+};
+
 export const GetVideoByAutor = async (
   fetcher: HttpAdpater,
   id_autor: number,
@@ -52,6 +73,7 @@ export const CreateVideo = async (
     const createVideo = await fetcher.post<Video>("video/", data, {
       headers: {
         Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
       },
     });
 
@@ -86,18 +108,18 @@ export const DeleteVideo = async (
   idVideo: number,
   token: string
 ): Promise<any> => {
-    try {
-        const deleteVideo = await fetcher.delete<any>(`videos-delete/${idVideo}/`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-              },
-        });
+  try {
+    const deleteVideo = await fetcher.delete<any>(`videos-delete/${idVideo}/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-        return deleteVideo;
-    } catch (err) {
-        throw new Error("Error trying to edit video: " + err);
-    }
-}
+    return deleteVideo;
+  } catch (err) {
+    throw new Error("Error trying to edit video: " + err);
+  }
+};
 
 export const GetVideoStatistics = async (
   fetcher: HttpAdpater,

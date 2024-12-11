@@ -10,14 +10,20 @@ import { AuthProvider, RequireAuth } from "./context/AuthProvider";
 import { getEncryptedLocalStorage } from "./storage/StorageServices";
 import { useUserStore } from "./store/user.store";
 import { useEffect } from "react";
+import { CreateVideoScreen } from "./screen/Videos/CreateVIdeo/CreateVideoScreen";
+import { ViewVideoScreen } from "./screen/Videos/ViewVideo/ViewVideoScreen";
+
+export const URL_MEDIA = "http://www.localhost:8000/";
 
 function App() {
   const { changeUser } = useUserStore();
+
 
   useEffect(() => {
     const decryptData = getEncryptedLocalStorage("data");
     if (decryptData) {
       changeUser(
+        decryptData["id"],
         decryptData["name"], 
         decryptData["last_name"],
         decryptData["email"],
@@ -35,11 +41,12 @@ function App() {
           <Route
             path="home"
             element={
-              <RequireAuth>
-                <HomeScreen />
-              </RequireAuth>
+              <HomeScreen />
             }
           />
+          <Route path="create-video"  element={<RequireAuth><CreateVideoScreen /></RequireAuth>} />
+          <Route path="video/:id"  element={<RequireAuth><ViewVideoScreen /></RequireAuth>} />
+          <Route path="videos"  element={<RequireAuth><CreateVideoScreen /></RequireAuth>} />
           <Route path="auth" element={<AuthScreen />} />
           <Route path="*" element={<Navigate to="home" />} />
         </Routes>

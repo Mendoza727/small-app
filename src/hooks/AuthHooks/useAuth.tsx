@@ -22,6 +22,7 @@ export const useLogin = () => {
       setLoginDetails(loginDetailsResult);
 
       changeUser(
+        loginDetailsResult.id,
         loginDetailsResult.name,
         loginDetailsResult.last_name,
         loginDetailsResult.email,
