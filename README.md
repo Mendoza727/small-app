@@ -1,6 +1,6 @@
 # Smalltube App
 
-![Smalltube Logo](https://via.placeholder.com/150) <!-- Reemplaza este enlace con la URL de tu logo -->
+![Smalltube Logo](https://github.com/Mendoza727/small-app/blob/main/src/assets/android-chrome-192x192.png) <!-- Reemplaza este enlace con la URL de tu logo -->
 
 ## Badges
 
