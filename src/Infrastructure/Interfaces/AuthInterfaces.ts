@@ -1,4 +1,5 @@
 export interface LoginResponse {
+    id: number;
     refresh:   string;
     access:    string;
     name:      string;

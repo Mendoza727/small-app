@@ -21,3 +21,16 @@ export const avatarGenerator = async({ name, lastName }: Props) => {
         fileUrl
     };
 }
+
+export async function fileUrlToFile(fileUrl: any) {
+    // Hacer el fetch al fileUrl
+    const response = await fetch(fileUrl);
+    const blob = await response.blob();
+
+    // Crear el archivo a partir del blob
+    const file = new File([blob], "downloaded_avatar.png", {
+        type: blob.type,
+    });
+
+    return file;
+}

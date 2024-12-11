@@ -1,5 +1,5 @@
 import { HttpAdpater } from "../../../config/adapters/HttpAdapter/Http.adapters"
-import { LoginResponse, Register } from "../../../Infrastructure/Interfaces/AuthInterfaces"
+import { LoginResponse } from "../../../Infrastructure/Interfaces/AuthInterfaces"
 
 export const AuthLoginCase = async(
     fetcher: HttpAdpater,
@@ -16,10 +16,10 @@ export const AuthLoginCase = async(
 
 export const RegisterAuthCase = async (
     fetcher: HttpAdpater,
-    data: Register
-): Promise<Register> => {
+    data: any
+): Promise<any> => {
     try {
-        const register = await fetcher.post<Register>('/register/', data);
+        const register = await fetcher.post<any>('/register/', data);
         return register;
     } catch (err) {
         throw new Error("Error trying to register: " + (err instanceof Error ? err.message : err));

@@ -1,19 +1,18 @@
+import { useState, useEffect } from 'react';
+import { URL_MEDIA } from '@/App';
+import { GetDurationVideo } from '@/config/helpers/GetDurationVideo.utils';
+import { Videos } from '@/Infrastructure/Interfaces/VideoInterfaces';
 import { Button } from 'flowbite-react';
 import { motion, AnimatePresence } from 'framer-motion'
-import {Play, Volume2 } from 'lucide-react'
+import { Play, Volume2 } from 'lucide-react'
+import { FormaterDuration } from '../../config/helpers/FormatterDurations.utils';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
-  video: Video;
+  video: Videos;
   isHovered?: boolean;
   onHover?: () => void;
   onLeave?: () => void;
-}
-
-interface Video {
-  title: string;
-  views: string;
-  duration: string;
-  thumbnail: string;
 }
 
 export const VideoThumbnailComponent = ({
@@ -22,9 +21,36 @@ export const VideoThumbnailComponent = ({
   onHover,
   onLeave,
 }: Props) => {
+  const [duration, setDuration] = useState<string>("");
+  const [aspectRatio, setAspectRatio] = useState<number>(16 / 9); // Default to 16:9 ratio
+  const navigation = useNavigate();
+
+  useEffect(() => {
+    // Get video duration
+    GetDurationVideo(URL_MEDIA + video.video).then((response) => {
+      const formattedDuration = FormaterDuration(response);
+      setDuration(formattedDuration); 
+    });
+
+    // Calculate aspect ratio based on video dimensions (if available)
+    const videoElement = document.createElement('video');
+    videoElement.src = `${URL_MEDIA}${video.video}`;
+    videoElement.onloadedmetadata = () => {
+      const ratio = videoElement.videoWidth / videoElement.videoHeight;
+      setAspectRatio(ratio);
+    };
+  }, [video.video]);
+
+  const videoDetails = async (idVideo: number) => {
+    navigation(`/video/${idVideo}`);
+  }
+
+  // Determine if the video should be large or small based on aspect ratio
+  const isWide = aspectRatio > 1;  // Videos with wider aspect ratios
+
   return (
     <motion.div
-      className="group cursor-pointer break-inside-avoid"
+      className={`group cursor-pointer break-inside-avoid`}
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
       layout
@@ -33,10 +59,15 @@ export const VideoThumbnailComponent = ({
       exit={{ opacity: 0, scale: 0.8 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="relative rounded-lg overflow-hidden">
-        <img
-          src={video.thumbnail}
-          alt={video.title}
+      <div
+        className={`relative rounded-lg overflow-hidden ${isWide ? 'col-span-2' : 'col-span-1'} transition-all duration-300`}
+        onClick={() => videoDetails(video.id)}
+        style={{
+          aspectRatio: `${aspectRatio}`, // Dynamically set the aspect ratio of the video
+        }}
+      >
+        <video
+          src={`${URL_MEDIA}${video.video}`}
           width={640}
           height={360}
           className="h-auto max-w-full rounded-lg object-cover transform group-hover:scale-105 transition-transform duration-300"
@@ -79,10 +110,10 @@ export const VideoThumbnailComponent = ({
           </AnimatePresence>
         </div>
         <div className="absolute bottom-2 left-2 bg-happyblue-900 bg-opacity-75 px-2 py-1 rounded text-xs text-happyblue-100">
-          {video.views}
+          {duration}
         </div>
         <div className="absolute top-2 right-2 bg-happyblue-900 bg-opacity-75 px-2 py-1 rounded text-xs text-happyblue-100">
-          {video.duration}
+          {video.title}
         </div>
       </div>
     </motion.div>
